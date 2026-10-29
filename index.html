@@ -131,12 +131,13 @@ function drawLineupPdf(doc){
  const rinkCenter=imageX+imageWidth/2;
  const nameWidth=350;
  // No extra team labels or duplicate rink markings: the artwork already contains them.
- drawNames(doc,grouped('Platinum','G'),rinkCenter,92,{fontSize:15,maxWidth:nameWidth});
- drawNames(doc,grouped('Shake','G'),rinkCenter,700,{fontSize:15,maxWidth:nameWidth});
- drawDefenceRows(doc,grouped('Platinum','D'),rinkCenter,[129,174],nameWidth);
- drawDefenceRows(doc,grouped('Shake','D'),rinkCenter,[581,626],nameWidth);
- drawForwardRows(doc,grouped('Platinum','F'),rinkCenter,[285,330,375],nameWidth);
- drawForwardRows(doc,grouped('Shake','F'),rinkCenter,[417,462,507],nameWidth);
+ // Shake is displayed at the top end of the rink; Platinum at the bottom.
+ drawNames(doc,grouped('Shake','G'),rinkCenter,92,{fontSize:15,maxWidth:nameWidth});
+ drawNames(doc,grouped('Platinum','G'),rinkCenter,700,{fontSize:15,maxWidth:nameWidth});
+ drawDefenceRows(doc,grouped('Shake','D'),rinkCenter,[129,174],nameWidth);
+ drawDefenceRows(doc,grouped('Platinum','D'),rinkCenter,[581,626],nameWidth);
+ drawForwardRows(doc,grouped('Shake','F'),rinkCenter,[285,330,375],nameWidth);
+ drawForwardRows(doc,grouped('Platinum','F'),rinkCenter,[417,462,507],nameWidth);
 }
 
 function drawGoal(doc,rx,rw,cx,goalLineY,top,blue,red){
@@ -206,21 +207,21 @@ function buildPrint(){
  body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#111}
  .print-title{text-align:center;font-size:17px;font-weight:800;margin:0 0 4px;letter-spacing:.2px;line-height:1.15}.rink{width:100%;height:9.55in;border:3px solid #222;border-radius:42px;position:relative;overflow:hidden;background:#fff;break-inside:avoid;page-break-inside:avoid}
  .team-half{position:absolute;left:0;right:0;height:50%;display:block;padding:0 8px;min-height:0;z-index:2}
- .team-half.platinum{top:0}
- .team-half.shake{bottom:0}
+ .team-half.shake{top:0}
+ .team-half.platinum{bottom:0}
  .team-label{position:absolute;left:0;right:0;text-align:center;font-size:18px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin:0;z-index:3}
- .team-half.platinum .team-label{top:4px}
- .team-half.shake .team-label{bottom:4px}
+ .team-half.shake .team-label{top:4px}
+ .team-half.platinum .team-label{bottom:4px}
  .ice-section{position:absolute;left:4px;right:4px;text-align:center;z-index:3}
  .ice-heading{font-size:11px;letter-spacing:1.4px;font-weight:800;text-transform:uppercase;color:#555;margin:0 0 4px}
  .ice-row{display:flex;align-items:center;justify-content:center;gap:8px;min-height:25px;margin:0;flex-wrap:nowrap}
  .ice-name{font-size:13px;font-weight:700;white-space:nowrap;min-width:0;text-align:center;padding:1px 2px}
  .ice-section.defence .ice-row{gap:5px;flex-wrap:nowrap}.ice-section.defence .ice-name{font-size:12px}
  .ice-section.forwards .ice-row{gap:12px}
- .team-half.platinum .ice-section.defence{top:64%;}
- .team-half.platinum .ice-section.forwards{top:76%;}
- .team-half.shake .ice-section.forwards{top:4%;}
- .team-half.shake .ice-section.defence{top:32%;}
+ .team-half.shake .ice-section.defence{top:64%;}
+ .team-half.shake .ice-section.forwards{top:76%;}
+ .team-half.platinum .ice-section.forwards{top:4%;}
+ .team-half.platinum .ice-section.defence{top:32%;}
  .goal-end{position:absolute;left:0;right:0;height:82px;display:flex;justify-content:center;align-items:center;z-index:4}
  .goal-end.top{top:0;align-items:flex-start}
  .goal-end.bottom{bottom:0;align-items:flex-end}
@@ -242,7 +243,7 @@ function buildPrint(){
  .center-circle{position:absolute;top:50%;left:50%;width:90px;height:90px;border:2px solid #d23a43;border-radius:50%;transform:translate(-50%,-50%);z-index:1}
  .faceoff-dot{position:absolute;width:7px;height:7px;background:#d23a43;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)}
  </style>`;
- $('printSheet').innerHTML=style+`<div class="print-title">${esc(getLineupTitle())}</div><div class="rink"><div class="blue-line one"></div><div class="blue-line two"></div><div class="red-line"></div><div class="center-circle"><div class="faceoff-dot"></div></div><div class="team-half platinum"><div class="team-label">Platinum</div>${goalieEnd('Platinum','top')}${printSection('Platinum','D','Defence',4)}${printSection('Platinum','F','Forwards',3)}</div><div class="team-half shake"><div class="team-label">Shake</div>${printSection('Shake','F','Forwards',3)}${printSection('Shake','D','Defence',4)}${goalieEnd('Shake','bottom')}</div></div>`;
+ $('printSheet').innerHTML=style+`<div class="print-title">${esc(getLineupTitle())}</div><div class="rink"><div class="blue-line one"></div><div class="blue-line two"></div><div class="red-line"></div><div class="center-circle"><div class="faceoff-dot"></div></div><div class="team-half shake"><div class="team-label">Shake</div>${goalieEnd('Shake','top')}${printSection('Shake','D','Defence',4)}${printSection('Shake','F','Forwards',3)}</div><div class="team-half platinum"><div class="team-label">Platinum</div>${printSection('Platinum','F','Forwards',3)}${printSection('Platinum','D','Defence',4)}${goalieEnd('Platinum','bottom')}</div></div>`;
 }
 function selectRosterPlayer(pid){selectedRosterId=selectedRosterId===pid?null:pid;renderRoster();if(selectedRosterId)toast('Now tap a position in Shake or Platinum.');}
 function rosterDragStart(e,pid){draggingPlayerId=pid;draggingAssignmentId=null;selectedRosterId=pid;e.dataTransfer.setData('text/plain',pid);e.dataTransfer.effectAllowed='move';e.currentTarget.classList.add('dragging');}
